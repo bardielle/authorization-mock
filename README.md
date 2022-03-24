@@ -34,5 +34,26 @@ openssl x509 -req \
 -days 10 -sha256
 ```
 
-## run: 
+## run a test 
+```
 curl -v  --cacert ca.crt   --cert client123.crt   --key client123.key -v   -X GET   https://127.0.0.1:8443/123
+```
+
+# Upgrade a device - use a reverse proxy
+## Open port in firewalld
+In the Builder VM open the port 8443
+``` 
+firewall-cmd --add-port=8443/tcp
+```
+
+## Use the dns name of the server
+It can be found using the command: `openssl x509 -in /home/repo/authorization-mock/server.crt -text`
+Update it in `/etc/hosts`
+
+## Config the remote
+In the remotes.d file config those flags (please store the certificates in `/etc/pki/tls`) 
+* tls-client-cert-path
+* tls-client-key-path
+* tls-ca-path
+* url (should be looked like `https://project-flotta.io:8443/device-worker-upgrade/repo`)
+
